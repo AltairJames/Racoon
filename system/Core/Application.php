@@ -2,14 +2,20 @@
 
 namespace Racoon\Core;
 
+use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
 
-class Application {
+class Application extends RuntimeManager {
 
     private static $instance;
     private $version;
     private $started = false;
     private $exited = false;
+
+    /**
+     * Runtime duration logging.
+     */
+
     private $start_time;
     private $end_time;
     private $duration;
@@ -17,6 +23,14 @@ class Application {
     private function __construct() {
         $this->start_time = microtime(true);
         $this->version = '1.0';
+    }
+
+    /**
+     * Return root directory.
+     */
+
+    public function root() {
+        return '../';
     }
 
     /**
@@ -43,9 +57,10 @@ class Application {
      */
 
     private function runtime() {
-        $app = App::info();
-        
-    }
+        $app = App::locale();
+
+        echo App::info()->name . '<br /><br />';
+    }   
 
     /**
      * Terminate application.

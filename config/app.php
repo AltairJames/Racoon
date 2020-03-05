@@ -37,7 +37,7 @@
 
         'info'         => [
 
-            'name'          => '',
+            'name'          => 'Untitled Application',
 
             'description'   => '',
 
@@ -80,5 +80,17 @@
         'locale'       => 'en',
 
         'locale2'      => 'en',
+
+        /**
+         * -----------------------------------------
+         *  MINIFY SOURCE CODE
+         * -----------------------------------------
+         *  Increase loading efficiency by removing
+         *  all whitespaces and comments from your
+         *  code to decrease loading time.
+         * -----------------------------------------
+         */
+
+        'minify'       => true,
 
     ];

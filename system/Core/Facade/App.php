@@ -2,18 +2,16 @@
 
 namespace Racoon\Core\Facade;
 
+use Racoon\Core\Application;
+use Racoon\Core\Application\AppHelper;
 use Racoon\Core\Facade\Components\FacadeBase;
 
 class App extends FacadeBase {
 
-    /**
-     * Register aliases to this facade.
-     */
+    protected static $callAs = 'App';
 
-    protected function set() {
-        return $this->register('release', function() {
-            return 'deploy';
-        });
+    protected static function set() {
+        static::bind(new AppHelper(Application::context()));
     }
 
 }
