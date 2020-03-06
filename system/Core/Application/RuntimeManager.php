@@ -4,6 +4,10 @@ namespace Racoon\Core\Application;
 
 abstract class RuntimeManager {
 
+    /**
+     * Application deployment status.
+     */
+
     protected $release;
 
     public function setRelease(string $release) {
@@ -33,6 +37,20 @@ abstract class RuntimeManager {
     }
 
     /**
+     * Set or return application timezone.
+     */
+
+    protected $timezone;
+
+    public function setTimezone(string $region) {
+        $this->timezone = $region;
+    }
+
+    public function getTimezone() {
+        return $this->timezone;
+    }
+
+    /**
      * Set or Get localization.
      */
 
@@ -58,6 +76,20 @@ abstract class RuntimeManager {
 
     public function getLocale2() {
         return $this->locale2;
+    }
+
+    /**
+     * Set or return minify source-code.
+     */
+
+    protected $minify;
+
+    public function setMinify(bool $condition) {
+        $this->minify = $condition;
+    }
+
+    public function getMinify() {
+        return $this->minify;
     }
 
 }
