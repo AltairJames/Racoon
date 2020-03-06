@@ -72,7 +72,23 @@ class CacheFactory {
                 return static::$asset_repository;
             }
 
-            return json_decode(file_get_contents($this->file), true);
+            $fetch = json_decode(file_get_contents($this->file), true);
+
+            $this->store($this->type, $fetch);
+            return $fetch;
+        }
+    }
+
+    /**
+     * Store data to repository.
+     */
+
+    private function store(string $type, array $data) {
+        if($this->type === 'config') {
+            static::$config_repository = $data;
+        }
+        else if($this->type === 'asset') {
+            static::$asset_repository = $data;
         }
     }
 
@@ -81,14 +97,19 @@ class CacheFactory {
      */
 
     public function write(array $data) {
-        $toString = json_encode($data);
-        if($this->exist()) {
-            $this->destroy($this->file);
-        }
+        if($this->enabled()) {
+            $toString = json_encode($data);
+            
+            if($this->exist()) {
+                $this->destroy($this->file);
+            }
 
-        $file = fopen($this->file, 'a+');
-        fwrite($file, $toString);
-        fclose($file);
+            $file = fopen($this->file, 'a+');
+            fwrite($file, $toString);
+            fclose($file);
+
+            $this->store($this->type, $data);
+        }
     }
 
     /**
@@ -106,6 +127,16 @@ class CacheFactory {
     public function make() {
         if($this->type === 'config') {
             return new CacheConfig($this);
+        }
+        else if($this->type === 'asset') {
+
+        }
+        else if($this->type === 'routes') {
+            return new CacheRoutes($this);           
+        }
+        else if($this->type === 'route') {
+            $cache = new CacheRoute($this);
+            return $cache->getData();
         }
     }
 
