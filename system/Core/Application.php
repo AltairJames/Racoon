@@ -4,6 +4,7 @@ namespace Racoon\Core;
 
 use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
+use Racoon\Core\Request\RequestManager;
 
 class Application extends RuntimeManager {
 
@@ -57,9 +58,34 @@ class Application extends RuntimeManager {
      */
 
     private function runtime() {
-        $release = App::release();
+        if(App::release() === 'debug') {
+            $this->inDebugMode();
+        }
 
-    }   
+        $manager = $this->startRequestManager();
+
+        if($manager->success()) {
+            $route = $manager->getRouteData();
+
+        }
+    }
+
+    /**
+     * Start request service to load and test
+     * request route.
+     */
+
+    private function startRequestManager() {
+        return RequestManager::start($this);
+    }
+
+    /**
+     * Put application to debug mode.
+     */
+
+    private function inDebugMode() {
+
+    }
 
     /**
      * Terminate application.
@@ -79,7 +105,7 @@ class Application extends RuntimeManager {
      */
 
     private function computeRuntimeDuration() {
-
+        
     }
 
     /**
