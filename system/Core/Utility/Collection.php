@@ -7,7 +7,7 @@ class Collection {
     private $name;
     private $data;
 
-    public function __construct(string $name, array $data) {
+    public function __construct(string $name, array $data = []) {
         $this->name = $name;
         $this->data = $data;
     }

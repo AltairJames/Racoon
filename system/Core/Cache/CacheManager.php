@@ -24,4 +24,29 @@ class CacheManager extends CacheUtil {
         return $this->makeFactory('bin', 'config')->make();
     }
 
+    /**
+     * Return cached asset instance.
+     */
+
+    public function asset() {
+        return $this->makeFactory('bin', 'asset')->make();
+    }
+
+    /**
+     * Return routes asset instance.
+     */
+
+    public function routes() {
+        return $this->makeFactory('bin', 'routes')->make();
+    }
+
+    /**
+     * Return uri cached route data.
+     */
+
+    public function route(string $uri) {
+        $instance = new CacheFactory($this->context, 'route', $this->makePath('routes', $uri));
+        return $instance->make();
+    }
+
 }
