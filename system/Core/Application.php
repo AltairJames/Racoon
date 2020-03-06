@@ -57,9 +57,8 @@ class Application extends RuntimeManager {
      */
 
     private function runtime() {
-        $app = App::locale();
-
-        echo App::info()->name . '<br /><br />';
+        $release = App::release();
+        
     }   
 
     /**
@@ -71,14 +70,7 @@ class Application extends RuntimeManager {
            $this->exited = true;
            $this->end_time = microtime(true);
            $this->computeRuntimeDuration();
-           $this->displayIncludedFiles();
            exit(0);
-        }
-    }
-
-    private function displayIncludedFiles() {
-        foreach(get_included_files() as $file) {
-            echo $file . '<br />';
         }
     }
 

@@ -47,8 +47,10 @@ class AppHelper {
     private function loadCache() {
         if(is_null($this->cache)) {
             $this->cache = Cache::config()->app();
+
+            $this->context->setRelease($this->cache['release']);
             
-            if($this->cache === 'up') {
+            if($this->cache['mode'] === 'up') {
                 $this->context->up();
             }
             else {
@@ -57,6 +59,15 @@ class AppHelper {
             
             $this->context->setLocale($this->cache['locale']);
         }
+    }
+
+    /**
+     * Return deployment status.
+     */
+
+    public function release() {
+        $this->loadCache();
+        return $this->context->getRelease();
     }
 
     /**
@@ -126,7 +137,13 @@ class AppHelper {
      */
 
     public function locale2(string $lang = null) {
-
+        $this->loadCache();
+        if(!is_null($lang)) {
+            $this->context->setLocale2($lang);
+        }
+        else {
+            return $this->context->getLocale2();
+        }
     }
 
 }
