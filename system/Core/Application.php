@@ -58,7 +58,7 @@ class Application extends RuntimeManager {
 
     private function runtime() {
         $release = App::release();
-        
+
     }   
 
     /**

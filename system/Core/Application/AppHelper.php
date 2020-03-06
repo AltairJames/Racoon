@@ -57,7 +57,9 @@ class AppHelper {
                 $this->context->down();
             }
             
+            $this->context->setTimezone($this->cache['timezone']);
             $this->context->setLocale($this->cache['locale']);
+            $this->context->setMinify($this->cache['minify']);
         }
     }
 
@@ -113,9 +115,21 @@ class AppHelper {
 
     public function info() {
         $this->loadCache();
-        $info = $this->cache['info'];
+        return new Collection('info', $this->cache['info']);
+    }
 
-        return new Collection('info', $info);
+    /**
+     * Set or return timezone.
+     */
+
+    public function timezone(string $region) {
+        $this->loadCache();
+        if(!is_null($region)) {
+            $this->context->setTimezone($region);
+        }
+        else {
+            return $this->context->getTimezone();
+        }
     }
 
     /**
@@ -143,6 +157,20 @@ class AppHelper {
         }
         else {
             return $this->context->getLocale2();
+        }
+    }
+
+    /**
+     * Return or set minify source-code value.
+     */
+
+    public function minify(bool $condition = null) {
+        $this->loadCache();
+        if(!is_null($condition)) {
+            $this->context->setMinify($condition);
+        }
+        else {
+            return $this->context->getMinify();
         }
     }
 
