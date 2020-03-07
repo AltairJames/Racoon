@@ -5,16 +5,20 @@ namespace Racoon\Core\Request;
 use Racoon\Core\Application;
 use Racoon\Core\Facade\Cache;
 use Racoon\Core\Facade\Request;
+use Racoon\Core\Facade\Str;
 
 class RequestManager {
 
     private static $instance;
     private $context;
     private $success = false;
+    private $routes;
     private $route;
+    private $uri;
 
     private function __construct(Application $context) {
         $this->context = $context;
+        $this->uri = Request::uri();
         $this->init();
     }
 
@@ -23,20 +27,39 @@ class RequestManager {
      */
 
     private function init() {
-        $uri = Request::uri();
-        $cached = Cache::route($uri);
+        $cached = Cache::route($this->uri);
 
         /**
          * If uri is still not cached, generate cache file.
          */
         
         if(is_null($cached)) {
-            $cached = Cache::routes();
-
-
+            $this->routes = Cache::routes();
         }
         else {
-            $this->route = $cached;
+            $this->routes = $cached;
+        }
+
+        $this->findURIFromList();
+    }
+
+    /**
+     * Check if request URI is in the routes list.
+     */
+
+    private function findURIFromList() {
+        $uri1 = $this->uriToArray($this->uri);
+
+    }
+
+    /**
+     * Convert URI to array.
+     */
+
+    private function uriToArray(string $uri) {
+        $last = Str::last($uri);
+        if($last === '/') {
+            
         }
     }
 
@@ -45,7 +68,7 @@ class RequestManager {
      */
 
     public function getRouteData() {
-        return $this->route;
+        return $this->routes;
     }
 
     /**

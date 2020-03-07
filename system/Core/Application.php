@@ -23,7 +23,7 @@ class Application extends RuntimeManager {
 
     private function __construct() {
         $this->start_time = microtime(true);
-        $this->version = '1.0';
+        $this->version = '1.0.0';
     }
 
     /**
