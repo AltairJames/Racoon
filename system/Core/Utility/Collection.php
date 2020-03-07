@@ -29,4 +29,12 @@ class Collection {
 
     public function __set(string $name, $data) {}
 
+    /**
+     * Return collection as array.
+     */
+
+    public function toArray() {
+        return $this->data;
+    }
+
 }
