@@ -132,7 +132,8 @@ class CacheFactory {
 
         }
         else if($this->type === 'routes') {
-            return new CacheRoutes($this);           
+            $cache = new CacheRoutes($this);           
+            return $cache->getRoutes();
         }
         else if($this->type === 'route') {
             $cache = new CacheRoute($this);
