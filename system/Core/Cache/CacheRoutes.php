@@ -15,8 +15,9 @@ class CacheRoutes {
     public function __construct(CacheFactory $factory) {
         $this->factory = $factory;
         $this->path = App::root() . 'routes/';
+        $cache_enable = $factory->configData('routes') ?? false;
 
-        if($factory->exist() && $factory->enabled()) {
+        if($factory->exist() && $factory->enabled() && $cache_enable) {
             $this->routes = $factory->read();
         }
 
