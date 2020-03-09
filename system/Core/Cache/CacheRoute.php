@@ -9,7 +9,8 @@ class CacheRoute extends CacheUtil {
     private $data;
 
     public function __construct(CacheFactory $factory) {
-        if($factory->exist() && $factory->enabled()) {
+        $cache_enable = $factory->configData('routes') ?? false;
+        if($factory->exist() && $factory->enabled() && $cache_enable) {
             $this->data = $factory->read();
         }
     }

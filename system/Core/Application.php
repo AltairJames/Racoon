@@ -4,6 +4,7 @@ namespace Racoon\Core;
 
 use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
+use Racoon\Core\Request\Handler\MiddlewareService;
 use Racoon\Core\Request\RequestManager;
 
 class Application extends RuntimeManager {
@@ -66,7 +67,11 @@ class Application extends RuntimeManager {
 
         if($manager->success()) {
             $route = $manager->getRouteData();
+            $middleware = MiddlewareService::set($this, $route);
 
+            if($middleware->success()) {
+
+            }
         }
     }
 

@@ -6,6 +6,7 @@ use Racoon\Core\Application;
 use Racoon\Core\Facade\Cache;
 use Racoon\Core\Facade\Request;
 use Racoon\Core\Facade\Str;
+use Racoon\Core\Utility\Collection;
 
 class RequestManager {
 
@@ -49,7 +50,29 @@ class RequestManager {
 
     private function findURIFromList() {
         $uri1 = $this->uriToArray($this->uri);
+        for($i = 0; $i <= (sizeof($this->routes) - 1); $i++) {
+            $uri2 = $this->uriToArray($this->routes[$i]['uri']);
+            $hits = 0;
+            
+            if(sizeof($uri1) === sizeof($uri2)) {
+                for($j = 0; $j <= (sizeof($uri2) - 1); $j++) {
+                    if(Str::equal($uri1[$j], $uri2[$j])) {
+                        $hits++;
+                    }
+                    else {
+                        if(Str::first($uri2[$j]) === '{' && Str::last($uri2[$j]) === '}') {
+                            $hits++;
+                        }
+                    }
+                }
+            }
 
+            if($hits === sizeof($uri1)) {
+                $this->route = $this->routes[$i];
+                $this->success = true;
+                break;
+            }
+        }
     }
 
     /**
@@ -59,8 +82,12 @@ class RequestManager {
     private function uriToArray(string $uri) {
         $last = Str::last($uri);
         if($last === '/') {
-            
+            $uri = Str::move($uri, 0, 1);
         }
+        
+        $split = explode('/', $uri);
+        array_shift($split);
+        return $split;
     }
 
     /**
@@ -68,7 +95,7 @@ class RequestManager {
      */
 
     public function getRouteData() {
-        return $this->routes;
+        return new Collection('Route Data', $this->route);
     }
 
     /**

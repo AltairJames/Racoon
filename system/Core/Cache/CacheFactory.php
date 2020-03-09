@@ -10,6 +10,8 @@ class CacheFactory {
     protected $type;
     protected $file;
 
+    private $cache_config_path;
+
     /**
      * Repository variables to prevent reloading
      * of cache files.
@@ -19,10 +21,32 @@ class CacheFactory {
     protected static $config_repository;
     protected static $route_repository;
 
+    protected $cache_config;
+
     public function __construct(Application $context, string $type, string $file) {
         $this->context = $context;
         $this->type = $type;
         $this->file = $file;
+        $this->cache_config_path = $context->root() . 'config/cache.php';
+        $this->loadCacheConfig();
+    }
+
+    /**
+     * Load config file for cache settings.
+     */
+
+    private function loadCacheConfig() {
+        if(file_exists($this->cache_config_path) && is_readable($this->cache_config_path)) {
+            $this->cache_config = require $this->cache_config_path;
+        }
+    }
+
+    /**
+     * Test if module to cache is enabled.
+     */
+
+    public function configData(string $type) {
+        return $this->cache_config[$type];
     }
 
     /**
@@ -30,7 +54,7 @@ class CacheFactory {
      */
 
     public function enabled() {
-        return true;
+        return $this->cache_config['enable'];
     }
     
     /**

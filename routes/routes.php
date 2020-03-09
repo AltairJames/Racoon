@@ -4,7 +4,7 @@ use Racoon\Core\Facade\Route;
 
 /**
   * -----------------------------------------
-  *  ROUTES
+  *  ROUTES MAP
   * -----------------------------------------
   *  You can group routes by placing them
   *  together in separate route files.
@@ -12,4 +12,4 @@ use Racoon\Core\Facade\Route;
   */
 
 
-Route::web('/', 'MainActivity@index');
+Route::web('/', 'MainController@index');
