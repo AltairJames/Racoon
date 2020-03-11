@@ -36,12 +36,12 @@ class RequestManager {
         
         if(is_null($cached)) {
             $this->routes = Cache::routes();
+            $this->findURIFromList();
         }
         else {
-            $this->routes = $cached;
+            $this->route = $cached;
+            $this->success = true;
         }
-
-        $this->findURIFromList();
     }
 
     /**
@@ -70,9 +70,18 @@ class RequestManager {
             if($hits === sizeof($uri1)) {
                 $this->route = $this->routes[$i];
                 $this->success = true;
+                $this->makeCacheFile($this->route);
                 break;
             }
         }
+    }
+
+    /**
+     * Create routes file if mapping is a success.
+     */
+
+    private function makeCacheFile(array $route) {
+        Cache::writeRouteCache($this->uri, $route);
     }
 
     /**
@@ -95,7 +104,11 @@ class RequestManager {
      */
 
     public function getRouteData() {
-        return new Collection('Route Data', $this->route);
+        if(!$this->route instanceof Collection) {
+            return new Collection('Route Data', $this->route);
+        }
+        
+        return $this->route;
     }
 
     /**

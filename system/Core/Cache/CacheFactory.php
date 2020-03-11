@@ -21,7 +21,7 @@ class CacheFactory {
     protected static $config_repository;
     protected static $route_repository;
 
-    protected $cache_config;
+    protected static $cache_config;
 
     public function __construct(Application $context, string $type, string $file) {
         $this->context = $context;
@@ -37,7 +37,9 @@ class CacheFactory {
 
     private function loadCacheConfig() {
         if(file_exists($this->cache_config_path) && is_readable($this->cache_config_path)) {
-            $this->cache_config = require $this->cache_config_path;
+            if(is_null(static::$cache_config)) {
+                static::$cache_config = require $this->cache_config_path;
+            }
         }
     }
 
@@ -46,15 +48,16 @@ class CacheFactory {
      */
 
     public function configData(string $type) {
-        return $this->cache_config[$type];
+        return static::$cache_config[$type];
     }
 
     /**
-     * Return true if caching is enabled.
+     * Return true if caching is enabled. If release is in debug
+     * mode, caching is automatically disabled.
      */
 
     public function enabled() {
-        return $this->cache_config['enable'];
+        return static::$cache_config['enable'];
     }
     
     /**
@@ -162,6 +165,16 @@ class CacheFactory {
         else if($this->type === 'route') {
             $cache = new CacheRoute($this);
             return $cache->getData();
+        }
+    }
+
+    /**
+     * Write cache file exclusively for routes.
+     */
+
+    public function writeFile(array $data) {
+        if($this->type === 'route' && !$this->exist() && $this->enabled()) {
+            return new CacheRouteWriter($this, $data);
         }
     }
 

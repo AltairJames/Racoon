@@ -29,13 +29,21 @@ class RouteFactory {
     }
 
     /**
-     * Routes that use 
+     * Routes that use http method.
      */
 
     public function api(string $uri, $argument) {
         $route = new APIRoute($this->context, $uri, $argument);
         static::$routes[] = $route;
         return $route;
+    }
+
+    /**
+     * Group routes with common properties.
+     */
+
+    public function group($closure) {
+        return new RouteGroup($closure);
     }
 
     /**
