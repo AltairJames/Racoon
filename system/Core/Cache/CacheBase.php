@@ -12,7 +12,10 @@ abstract class CacheBase {
         if(is_null($this->{$name . '_data'})) {
             $this->data[$name] = $this->loadFile($file);
             $this->{$name . '_data'} = $this->data[$name];
-            $this->factory->write($this->data);
+            
+            if($this->enables[$name] ?? false) {
+                $this->factory->write($this->data);
+            }
         }
         return $this->{$name . '_data'};
     }

@@ -49,4 +49,13 @@ class CacheManager extends CacheUtil {
         return $instance->make();
     }
 
+    /**
+     * Write route cache file.
+     */
+
+    public function writeRouteCache(string $uri, array $data) {
+        $instance = new CacheFactory($this->context, 'route', $this->makePath('routes', $uri));
+        return $instance->writeFile($data);
+    }
+
 }
