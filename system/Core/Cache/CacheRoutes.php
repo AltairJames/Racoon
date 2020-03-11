@@ -11,13 +11,14 @@ class CacheRoutes {
     private $files;
     private $routes = [];
     private $path;
+    private $cache_enable;
 
     public function __construct(CacheFactory $factory) {
         $this->factory = $factory;
         $this->path = App::root() . 'routes/';
-        $cache_enable = $factory->configData('routes') ?? false;
+        $this->cache_enable = $factory->configData('routes') ?? false;
 
-        if($factory->exist() && $factory->enabled() && $cache_enable) {
+        if($factory->exist() && $factory->enabled() && $this->cache_enable) {
             $this->routes = $factory->read();
         }
 
@@ -49,7 +50,7 @@ class CacheRoutes {
             $this->routes[] = $route->getArrayData();
         }
 
-        if($this->factory->enabled()) {
+        if($this->factory->enabled() && $this->cache_enable) {
             $this->factory->write($this->routes);
         }
     }

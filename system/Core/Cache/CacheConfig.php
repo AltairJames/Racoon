@@ -17,22 +17,24 @@ class CacheConfig extends CacheBase {
     protected $app_data;
     protected $handler_data;
 
+    protected $enables;
+
     public function __construct(CacheFactory $factory) {
         $this->factory = $factory;
         $this->context = $factory->getContext();
         $this->file = $factory->getFile();
 
         $this->path = App::root() . 'config/';
-        $cache_enable = $factory->configData('config');
+        $this->enables = $factory->configData('config');
         
         if($factory->exist() && $factory->enabled()) {
             $this->data = $factory->read();
 
-            if($cache_enable['app'] ?? false) {
+            if($this->enables['app'] ?? false) {
                 $this->app_data = $this->data['app'] ?? null;
             }
 
-            if($cache_enable['handler'] ?? false) {
+            if($this->enables['handler'] ?? false) {
                 $this->handler_data = $this->data['handler'] ?? null;
             }
         }
