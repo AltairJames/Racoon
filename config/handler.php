@@ -39,6 +39,7 @@
                 'generic'   => [
 
                     App\Handler\Middleware\BaseRequestMiddleware::class,
+                    App\Handler\Middleware\RequestMethodMiddleware::class,
 
                 ],
 
