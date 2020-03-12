@@ -9,12 +9,16 @@ class MiddlewareService extends HandlerBase {
 
     protected static $instance;
     protected $context;
-    protected $collection;
-    private $success = false;
+    protected $resource;
+    protected $route;
+    protected $success = false;
+    protected $response = 500;
+    protected $redirect;
 
-    private function __construct(Application $context, Collection $collection) {
+    private function __construct(Application $context, Collection $route, Collection $resource) {
         $this->context = $context;
-        $this->collection = $collection;
+        $this->route = $route;
+        $this->resource = $resource;
         $this->extractCacheData('middleware');
         $this->startIteration();
     }
@@ -28,13 +32,21 @@ class MiddlewareService extends HandlerBase {
     }
 
     /**
+     * Return http status code.
+     */
+
+    public function getStatus() {
+        return $this->response;
+    }
+
+    /**
      * Use singleton pattern to prevent multiple
      * instantiation of this service class.
      */
 
-    public static function set(Application $context, Collection $collection) {
+    public static function set(Application $context, Collection $collection, Collection $resource) {
         if(is_null(static::$instance)) {
-            static::$instance = new self($context, $collection);
+            static::$instance = new self($context, $collection, $resource);
         }
         return static::$instance;
     }

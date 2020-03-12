@@ -13,6 +13,7 @@ class RequestManager {
     private static $instance;
     private $context;
     private $success = false;
+    private $resource = [];
     private $routes;
     private $route;
     private $uri;
@@ -41,6 +42,24 @@ class RequestManager {
         else {
             $this->route = $cached;
             $this->success = true;
+            $this->fetchResource();
+        }
+    }
+
+    /**
+     * Fetch URI parameters when cache file already exist.
+     */
+
+    private function fetchResource() {
+        $uri1 = $this->uriToArray($this->uri);
+        $uri2 = $this->uriToArray($this->route->uri);
+
+        for($i = 0; $i <= (sizeof($uri2) - 1); $i++) {
+            $item = $uri2[$i];
+            $name = Str::move($item, 1, 2);
+            if(Str::first($item) === '{' && Str::last($item) === '}' && strlen($name) !== 0) {
+                $this->resource[$name] = $uri1[$i];
+            }
         }
     }
 
@@ -60,7 +79,9 @@ class RequestManager {
                         $hits++;
                     }
                     else {
-                        if(Str::first($uri2[$j]) === '{' && Str::last($uri2[$j]) === '}') {
+                        $name = Str::move($uri2[$j], 1, 2);
+                        if(Str::first($uri2[$j]) === '{' && Str::last($uri2[$j]) === '}' && strlen($name) !== 0) {
+                            $this->resource[$name] = $uri1[$j];
                             $hits++;
                         }
                     }
@@ -109,6 +130,14 @@ class RequestManager {
         }
         
         return $this->route;
+    }
+
+    /**
+     * Return route resource data.
+     */
+
+    public function getResourceData() {
+        return new Collection('Resource', $this->resource);
     }
 
     /**

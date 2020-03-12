@@ -33,7 +33,7 @@ class RequestData {
      */
 
     public function uri() {
-        return $_SERVER['REQUEST_URI'];
+        return explode('?', $_SERVER['REQUEST_URI'])[0];
     }
 
     /**
