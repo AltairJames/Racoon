@@ -19,7 +19,7 @@ class Collection {
     public function __get(string $name) {
         if(array_key_exists($name, $this->data)) {
             $this->{$name} = $this->data[$name];
-            return $this->{$name};   
+            return $this->data[$name];   
         }
     }
 

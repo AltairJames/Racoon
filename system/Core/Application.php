@@ -2,10 +2,12 @@
 
 namespace Racoon\Core;
 
+use App\Controller\HttpResponseController;
 use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
 use Racoon\Core\Request\Handler\MiddlewareService;
 use Racoon\Core\Request\RequestManager;
+use Racoon\Core\Utility\Collection;
 
 class Application extends RuntimeManager {
 
@@ -64,15 +66,44 @@ class Application extends RuntimeManager {
         }
 
         $manager = $this->startRequestManager();
+        $controller = HttpResponseController::class;
+        $code = 500;
 
         if($manager->success()) {
             $route = $manager->getRouteData();
-            $middleware = MiddlewareService::set($this, $route);
+            $middleware = MiddlewareService::set($this, $route, $manager->getResourceData());
 
             if($middleware->success()) {
-
+                $controller = 'App\\Controller\\' . $route->controller;
+                $code = 200;
+            }
+            else {
+                $code = $middleware->getStatus();
             }
         }
+        else {
+            $code = 404;
+        }
+
+        $this->controllerInit($code, $controller, $manager->getResourceData());
+        $this->setRequestHeaders();
+    }
+
+    /**
+     * Proceed to the controller.
+     */
+
+    private function controllerInit(int $code, string $controller, Collection $resource) {
+        $instance = new $controller();
+        $instance->set();
+    }
+
+    /**
+     * Set HTTP headers before returning response data.
+     */
+
+    private function setRequestHeaders() {
+
     }
 
     /**
