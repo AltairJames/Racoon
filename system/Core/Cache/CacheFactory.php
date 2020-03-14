@@ -99,6 +99,10 @@ class CacheFactory {
                 return static::$asset_repository;
             }
 
+            if($this->type === 'routes' && !is_null(static::$route_repository)) {
+                return static::$route_repository;
+            }
+
             $fetch = json_decode(file_get_contents($this->file), true);
 
             $this->store($this->type, $fetch);
@@ -116,6 +120,9 @@ class CacheFactory {
         }
         else if($this->type === 'asset') {
             static::$asset_repository = $data;
+        }
+        else if($this->type === 'routes') {
+            static::$route_repository = $data;
         }
     }
 
@@ -156,7 +163,7 @@ class CacheFactory {
             return new CacheConfig($this);
         }
         else if($this->type === 'asset') {
-
+            return new CacheAsset($this);
         }
         else if($this->type === 'routes') {
             $cache = new CacheRoutes($this);           

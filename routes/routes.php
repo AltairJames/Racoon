@@ -4,7 +4,7 @@ use Racoon\Core\Facade\Route;
 
 /**
   * -----------------------------------------
-  *  ROUTES MAP
+  *  ROUTES
   * -----------------------------------------
   *  You can group routes by placing them
   *  together in separate route files.

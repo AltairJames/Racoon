@@ -22,6 +22,7 @@ class WebRoute extends RouteBase {
         $this->data['type'] = 'web';
         $this->data['verb'][] = 'get';
         $this->data['uri'] = $uri;
+        $this->data['dataType'] = $this->dataTypes['html'];
         $this->setDefaultProps($argument);
     }
 

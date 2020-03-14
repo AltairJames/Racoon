@@ -4,6 +4,13 @@ namespace Racoon\Core\Request\Route;
 
 abstract class RouteBase {
 
+    protected $dataTypes = [
+        'text'      => 'text/plain',
+        'html'      => 'text/html',
+        'json'      => 'application/json', 
+        'xml'       => 'applciation/xml',
+    ];
+
     /**
      * Allowed http verbs for route request.
      */
@@ -36,7 +43,9 @@ abstract class RouteBase {
 
         'expire'            => null,
 
-        'max-request'       => null,
+        'maxRequest'        => null,
+
+        'dataType'          => null,
 
         'https'             => false,
 
@@ -103,7 +112,7 @@ abstract class RouteBase {
      */
 
     public function setMaximumRequest(int $max) {
-        $this->data['max-request'] = $max;
+        $this->data['maxRequest'] = $max;
         return $this;
     }
 

@@ -77,7 +77,7 @@
 
                 'generic'   => [
 
-
+                    App\Handler\Afterware\ResponseContentAfterware::class,
 
                 ],
 

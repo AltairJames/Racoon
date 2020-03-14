@@ -5,7 +5,9 @@ namespace Racoon\Core;
 use App\Controller\HttpResponseController;
 use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
+use Racoon\Core\Request\Handler\AfterwareService;
 use Racoon\Core\Request\Handler\MiddlewareService;
+use Racoon\Core\Request\RequestHeader;
 use Racoon\Core\Request\RequestManager;
 use Racoon\Core\Utility\Collection;
 
@@ -67,7 +69,9 @@ class Application extends RuntimeManager {
 
         $manager = $this->startRequestManager();
         $controller = HttpResponseController::class;
+        $method = 'index';
         $code = 500;
+        $route = null;
 
         if($manager->success()) {
             $route = $manager->getRouteData();
@@ -75,35 +79,103 @@ class Application extends RuntimeManager {
 
             if($middleware->success()) {
                 $controller = 'App\\Controller\\' . $route->controller;
+                $method = $route->method;
                 $code = 200;
             }
             else {
                 $code = $middleware->getStatus();
+                if($code === 307) {
+                    $this->forcedRedirection($middleware->getRedirect());
+                    exit(0);
+                }
             }
         }
         else {
             $code = 404;
         }
 
-        $this->controllerInit($code, $controller, $manager->getResourceData());
-        $this->setRequestHeaders();
+        $response = $this->controllerInit($code, $controller, $method, $route, $manager->getResourceData());
+        $afterware = AfterwareService::set($this, $route, $manager->getResourceData(), $response);
+
+        if($afterware->success()) {
+            $code = 200;
+        }
+        else {
+            $code = $afterware->getStatus();
+            if($code === 307) {
+                $this->forcedRedirection($afterware->getRedirect());
+                exit(0);
+            }
+
+            $controller = HttpResponseController::class;
+            $response = $this->controllerInit($code, $controller, 'index', $route, $manager->getResourceData());
+        }
+
+        $header = $this->setRequestHeaders($code, $route, $response);
+        $this->displayResponse($response);
+    }
+
+    /**
+     * Display or print response.
+     */
+
+    private function displayResponse($response) {
+        if(is_string($response)) {
+            if(App::minify()) {
+                echo $this->minify($response);
+            }
+            else {
+                echo $response;
+            }
+        }
+        else if(is_array($response)) {
+            echo json_encode($response);
+        }
+        else if(is_int($response)) {
+            echo $response;
+        }
+    }
+
+    /**
+     * Minify response string by removing all whitespaces.
+     */
+
+    private function minify(string $response) {
+        return $response;
     }
 
     /**
      * Proceed to the controller.
      */
 
-    private function controllerInit(int $code, string $controller, Collection $resource) {
+    private function controllerInit(int $code, string $controller, string $method, Collection $route = null, Collection $resource = null) {
+        $emit = [];
+        if($code !== 200) {
+            $emit = [
+                'code'  => $code,
+            ];
+        }
+        
         $instance = new $controller();
-        $instance->set();
+        $response = $instance->set($method, $route, $resource, $emit);
+
+        return $response;
+    }
+
+    /**
+     * Redirect to requested URI.
+     */
+
+    private function forcedRedirection(string $uri) {
+        header('location: ' . $uri);    
     }
 
     /**
      * Set HTTP headers before returning response data.
      */
 
-    private function setRequestHeaders() {
-
+    private function setRequestHeaders(int $code, Collection $route = null, $response = null) {
+        return RequestHeader::set($code, $route, $response);
     }
 
     /**

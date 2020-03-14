@@ -11,8 +11,8 @@ class RequestMethodMiddleware extends Middleware {
     protected function observe(Bundle $bundle) {
     $method = strtolower(Request::method());
     
-        if($bundle->route('type') === 'api') {
-            if(in_array($method, $bundle->route('verb'))) {
+        if($bundle->route->type === 'api') {
+            if(in_array($method, $bundle->route->verb)) {
                 return $this->next();
             }
         }
