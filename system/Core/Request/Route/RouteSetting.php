@@ -23,7 +23,9 @@ class RouteSetting {
 
         'expire'            => null,
 
-        'max-request'       => null,
+        'maxRequest'        => null,
+
+        'dataType'          => null,
 
         'https'             => false,
 
@@ -87,7 +89,7 @@ class RouteSetting {
      */
 
     public function setMaximumRequest(int $max) {
-        $this->props['max-request'] = $max;
+        $this->props['maxRequest'] = $max;
     }
 
     /**

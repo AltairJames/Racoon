@@ -5,7 +5,7 @@ namespace Racoon\Core\Request\Handler;
 use Racoon\Core\Application;
 use Racoon\Core\Utility\Collection;
 
-class MiddlewareService extends HandlerBase {
+class AfterwareService extends HandlerBase {
 
     protected static $instance;
     protected $context;
@@ -14,20 +14,21 @@ class MiddlewareService extends HandlerBase {
     protected $redirect;
     protected $bundle;
 
-    private function __construct(Application $context, Collection $route, Collection $resource) {
+    private function __construct(Application $context, Collection $route = null, Collection $resource = null, $response) {
         $this->context = $context;
         $this->bundle = [
 
-            'route'     => $route,
-            'resource'  => $resource,
+            'route'         => $route,
+            'resource'      => $resource,
+            'response'      => $response,
 
         ];
-        $this->extractCacheData('middleware');
+        $this->extractCacheData('afterware');
         $this->startIteration();
     }
 
     /**
-     * Return if middleware is success.
+     * Return if afterware is success.
      */
 
     public function success() {
@@ -55,9 +56,9 @@ class MiddlewareService extends HandlerBase {
      * instantiation of this service class.
      */
 
-    public static function set(Application $context, Collection $collection, Collection $resource) {
+    public static function set(Application $context, Collection $collection = null, Collection $resource = null, $response) {
         if(is_null(static::$instance)) {
-            static::$instance = new self($context, $collection, $resource);
+            static::$instance = new self($context, $collection, $resource, $response);
         }
         return static::$instance;
     }

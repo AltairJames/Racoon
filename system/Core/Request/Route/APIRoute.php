@@ -17,6 +17,7 @@ class APIRoute extends RouteBase {
 
         $this->data['type'] = 'api';
         $this->data['uri'] = $uri;
+        $this->data['dataType'] = $this->dataTypes['json'];
         $this->setDefaultProps($argument);
     }
 
@@ -55,6 +56,17 @@ class APIRoute extends RouteBase {
     public function delete() {
         if($this->testVerb('delete')) {
             $this->data['verb'][] = 'delete';
+        }
+        return $this;
+    }
+
+    /**
+     * Set content data type to respond.
+     */
+
+    public function setDataType(string $type) {
+        if(array_key_exists($type, $this->dataTypes)) {
+            $this->data['dataType'] = $this->dataTypes[$type];
         }
         return $this;
     }
