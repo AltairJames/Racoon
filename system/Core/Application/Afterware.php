@@ -5,7 +5,7 @@ namespace Racoon\Core\Application;
 use Racoon\Core\Request\Bundle;
 use Racoon\Core\Request\Handler\HandlerUtil;
 
-abstract class Middleware extends HandlerUtil {
+abstract class Afterware extends HandlerUtil {
 
     /**
      * Start observing handler response.

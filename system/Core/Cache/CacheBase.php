@@ -24,7 +24,7 @@ abstract class CacheBase {
      * Load array file to be cached.
      */
 
-    private function loadFile(string $file) {
+    protected function loadFile(string $file) {
         if(file_exists($file) && is_readable($file)) {
             return require $file;
         }

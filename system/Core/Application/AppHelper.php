@@ -59,6 +59,7 @@ class AppHelper {
             
             $this->context->setTimezone($this->cache['timezone']);
             $this->context->setLocale($this->cache['locale']);
+            $this->context->setLocale2($this->cache['locale2']);
             $this->context->setMinify($this->cache['minify']);
         }
     }
