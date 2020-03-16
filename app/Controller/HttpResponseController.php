@@ -10,9 +10,9 @@ class HttpResponseController extends Controller {
 
     protected function index(Bundle $bundle) {
         $code = $bundle->emit->code;
-        $desc = Lang::get('http::status.code.name.' . $code);
-            
-        return $desc;
+        $message = $bundle->emit->message;
+
+        return $message;
     }
 
 }

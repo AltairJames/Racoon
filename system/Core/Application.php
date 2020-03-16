@@ -5,6 +5,7 @@ namespace Racoon\Core;
 use App\Controller\HttpResponseController;
 use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
+use Racoon\Core\Facade\Lang;
 use Racoon\Core\Request\Handler\AfterwareService;
 use Racoon\Core\Request\Handler\MiddlewareService;
 use Racoon\Core\Request\RequestHeader;
@@ -94,11 +95,14 @@ class Application extends RuntimeManager {
             $code = 404;
         }
 
-        $response = $this->controllerInit($code, $controller, $method, $route, $manager->getResourceData());
+        $message = $this->getStatusCodeMessage($code);
+        $response = $this->controllerInit($code, $controller, $method, $route, $manager->getResourceData(), $message);
         $afterware = AfterwareService::set($this, $route, $manager->getResourceData(), $response);
 
         if($afterware->success()) {
-            $code = 200;
+            if($code === 200) {
+                $code = 200;
+            }
         }
         else {
             $code = $afterware->getStatus();
@@ -108,11 +112,20 @@ class Application extends RuntimeManager {
             }
 
             $controller = HttpResponseController::class;
-            $response = $this->controllerInit($code, $controller, 'index', $route, $manager->getResourceData());
+            $message = $this->getStatusCodeMessage($code);
+            $response = $this->controllerInit($code, $controller, 'index', $route, $manager->getResourceData(), $message);
         }
 
-        $header = $this->setRequestHeaders($code, $route, $response);
+        $header = $this->setRequestHeaders($code, $route, $response, $message);
         $this->displayResponse($response);
+    }
+
+    /**
+     * Return http status code description.
+     */
+
+    private function getStatusCodeMessage(int $code) {
+        return Lang::get('http::status.code.name.' . $code);
     }
 
     /**
@@ -148,11 +161,13 @@ class Application extends RuntimeManager {
      * Proceed to the controller.
      */
 
-    private function controllerInit(int $code, string $controller, string $method, Collection $route = null, Collection $resource = null) {
+    private function controllerInit(int $code, string $controller, string $method, Collection $route = null, Collection $resource = null, string $message = null) {
         $emit = [];
+
         if($code !== 200) {
             $emit = [
-                'code'  => $code,
+                'code'      => $code,
+                'message'   => $message,
             ];
         }
         
@@ -174,8 +189,8 @@ class Application extends RuntimeManager {
      * Set HTTP headers before returning response data.
      */
 
-    private function setRequestHeaders(int $code, Collection $route = null, $response = null) {
-        return RequestHeader::set($code, $route, $response);
+    private function setRequestHeaders(int $code, Collection $route = null, $response = null, string $message = null) {
+        return RequestHeader::set($code, $route, $response, $message);
     }
 
     /**

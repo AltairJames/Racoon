@@ -4,17 +4,30 @@ namespace Racoon\Lib\Locale;
 
 class LocaleFactory extends LocaleTranslations {
 
-    protected static $locale = [];
+    protected static $locales = [];
 
     protected $id;
     protected $label = [];
+    protected $locale;
+    protected $locale2;
 
-    public function __construct(string $id) {
+    public function __construct(LocaleManager $manager, string $id) {
         $this->id = $id;
 
-        if(!array_key_exists($id, static::$locale)) {
-            static::$locale[$id] = $this;
+        if(!array_key_exists($id, static::$locales)) {
+            static::$locales[$id] = $this;
         }
+    }
+
+    /**
+     * Call dynamic methods for translations.
+     */
+
+    public function __call($key, $arguments) {
+        if(array_key_exists($key, $this->languages)) {
+            $this->label[$key] = $arguments[0];
+        }
+        return $this;
     }
 
     /**
@@ -38,8 +51,8 @@ class LocaleFactory extends LocaleTranslations {
      */
 
     public static function getRegisteredLocale() {
-        $cache = static::$locale;
-        static::$locale = [];
+        $cache = static::$locales;
+        static::$locales = [];
         return $cache;
     }
 
