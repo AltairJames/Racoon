@@ -43,6 +43,11 @@ abstract class FacadeBase {
             if(method_exists($service, $method)) {
                 return $service->{$method}(...$arguments);
             }
+            else {
+                if(method_exists($service, 'inherit')) {
+                    return $service->inherit($method, $arguments);
+                }
+            }
         }
     }
 

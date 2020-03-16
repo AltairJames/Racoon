@@ -13,11 +13,27 @@ class LocaleManager {
     }
 
     /**
+     * Return default locale to use.
+     */
+
+    public function getLocale() {
+        return $this->locale;
+    }
+
+    /**
+     * Fallback locale to use.
+     */
+
+    public function getLocale2() {
+        return $this->locale2;
+    }
+
+    /**
      * Set locale id and instantiate locale.
      */
 
     public function id(string $id) {
-        return new LocaleFactory($id);
+        return new LocaleFactory($this, $id);
     }
 
 }

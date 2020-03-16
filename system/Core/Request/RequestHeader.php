@@ -2,13 +2,16 @@
 
 namespace Racoon\Core\Request;
 
+use Racoon\Core\Facade\App;
 use Racoon\Core\Utility\Collection;
 
 class RequestHeader {
 
     private static $instance;
+    private $message;
     
-    private function __construct(int $code, Collection $route = null, $response) {
+    private function __construct(int $code, Collection $route = null, $response, string $message = null) {
+        $this->message = $message;
         $this->setHeader($code, $route);
     }
 
@@ -18,7 +21,14 @@ class RequestHeader {
 
     private function setHeader(int $code, Collection $route = null) {
         if(is_null($route)) {
-
+            $method = App::method();
+            if(App::isAjax()) {
+                $this->setContentType('application/json');
+            }
+            else {
+                $this->setContentType('text/html');
+            }
+            $this->setAllowedRequestMethod([$method]);
         }
         else {
             $this->setContentType($route->dataType);
@@ -48,9 +58,7 @@ class RequestHeader {
      */
 
     private function setHttpStatus(int $code) {
-        if($code !== 200) {
-
-        }
+        http_response_code($code);
     }
 
     /**

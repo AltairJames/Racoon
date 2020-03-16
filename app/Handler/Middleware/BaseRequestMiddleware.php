@@ -9,9 +9,9 @@ use Racoon\Core\Request\Bundle;
 class BaseRequestMiddleware extends Middleware {
 
     protected function observe(Bundle $bundle) {
-    App::locale($bundle->route->locale);
         
         if(App::mode() === 'up' && $bundle->route->mode === 'up') {
+            App::locale($bundle->route->locale);
             return $this->next();
         }
 
