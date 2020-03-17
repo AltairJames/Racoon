@@ -29,6 +29,8 @@
 
             'locale'   => true,
 
+            'constant' => true,
+
         ],
 
         /**
