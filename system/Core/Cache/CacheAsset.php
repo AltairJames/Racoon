@@ -17,6 +17,7 @@ class CacheAsset extends CacheBase {
     protected $enables;
 
     protected $locale_data;
+    protected $constant_data;
 
     public function __construct(CacheFactory $factory) {
         $this->factory = $factory;
@@ -32,7 +33,19 @@ class CacheAsset extends CacheBase {
             if($this->enables['locale'] ?? false) {
                 $this->locale_data = $this->data['locale'] ?? null;
             }
+
+            if($this->enables['constant'] ?? false) {
+                $this->constant_data = $this->data['constant'] ?? null;
+            }
         }
+    }
+
+    /**
+     * Return global constants.
+     */
+
+    public function constant() {
+        return $this->load('constant', $this->path . 'constant/global' . $this->ext);
     }
 
     /**

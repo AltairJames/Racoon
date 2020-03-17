@@ -2,9 +2,9 @@
 
 namespace Racoon\Core;
 
-use App\Controller\HttpResponseController;
 use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
+use Racoon\Core\Facade\Cache;
 use Racoon\Core\Facade\Lang;
 use Racoon\Core\Request\Handler\AfterwareService;
 use Racoon\Core\Request\Handler\MiddlewareService;
@@ -68,8 +68,10 @@ class Application extends RuntimeManager {
             $this->inDebugMode();
         }
 
+        $this->defineGlobals();
+
         $manager = $this->startRequestManager();
-        $controller = HttpResponseController::class;
+        $controller = \App\Controller\HttpResponseController::class;
         $method = 'index';
         $code = 500;
         $route = null;
@@ -111,13 +113,26 @@ class Application extends RuntimeManager {
                 exit(0);
             }
 
-            $controller = HttpResponseController::class;
+            $controller = \App\Controller\HttpResponseController::class;
             $message = $this->getStatusCodeMessage($code);
             $response = $this->controllerInit($code, $controller, 'index', $route, $manager->getResourceData(), $message);
         }
 
         $header = $this->setRequestHeaders($code, $route, $response, $message);
         $this->displayResponse($response);
+    }
+
+    /**
+     * Define global constants from assets.
+     */
+
+    private function defineGlobals() {
+        $globals = Cache::asset()->constant();
+        if(!empty($globals)) {
+            foreach($globals as $key => $value) {
+                define($key, $value);
+            }
+        }
     }
 
     /**
