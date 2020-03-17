@@ -16,6 +16,7 @@ class CacheConfig extends CacheBase {
 
     protected $app_data;
     protected $handler_data;
+    protected $security_data;
 
     protected $enables;
 
@@ -37,6 +38,10 @@ class CacheConfig extends CacheBase {
             if($this->enables['handler'] ?? false) {
                 $this->handler_data = $this->data['handler'] ?? null;
             }
+
+            if($this->enables['security'] ?? false) {
+                $this->security_data = $this->data['security'] ?? null;
+            }
         }
     }
 
@@ -54,6 +59,14 @@ class CacheConfig extends CacheBase {
 
     public function handler() {
         return $this->load('handler', $this->path . 'handler' . $this->ext);
+    }
+
+    /**
+     * Return cached data from config/security.php
+     */
+
+    public function security() {
+        return $this->load('security', $this->path . 'security' . $this->ext);
     }
 
 }

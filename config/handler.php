@@ -19,33 +19,23 @@
          * -----------------------------------------
          *  Middlewares are handlers executed in
          *  each request before entering controller.
+         *  You can define your own middleware but
+         *  the middleware service will still run
+         *  the generic middleware.
          * -----------------------------------------
          */
 
         'middleware'    => [
 
-            /**
-             * Default middleware group.
-             */
+            'generic'   => [
 
-            'default'   => 'generic',
-
-            /**
-             * Middleware groups.
-             */
-
-            'groups'    => [
-
-                'generic'   => [
-
-                    App\Handler\Middleware\BaseRequestMiddleware::class,
-                    App\Handler\Middleware\RequestMethodMiddleware::class,
-
-                ],
-
-                /**
-                 * You can define middleware groups below.
-                 */
+                App\Handler\Middleware\BaseRequestMiddleware::class,
+                App\Handler\Middleware\RequestMethodMiddleware::class,
+                App\Handler\Middleware\RequestProtocolMiddleware::class,
+                App\Handler\Middleware\IPBlockerMiddleware::class,
+                App\Handler\Middleware\CrossOriginRequestMiddleware::class,
+                App\Handler\Middleware\UseragentMiddleware::class,
+                App\Handler\Middleware\RouteExpirationMiddleware::class,
 
             ],
 
@@ -63,27 +53,10 @@
 
         'afterware'      => [
 
-            /**
-             * Default afterware group.
-             */
+            'generic'   => [
 
-            'default'    => 'generic',
-
-            /**
-             * Middleware groups.
-             */
-
-            'groups'     => [
-
-                'generic'   => [
-
-                    App\Handler\Afterware\ResponseContentAfterware::class,
-
-                ],
-
-                /**
-                  * You can define afterware groups below.
-                  */
+                App\Handler\Afterware\ResponseContentAfterware::class,
+                App\Handler\Afterware\RedirectionAfterware::class,
 
             ],
 

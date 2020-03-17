@@ -15,6 +15,8 @@ class RouteSetting {
 
         'middleware'        => null,
 
+        'afterware'         => null,
+
         'mode'              => 'up',
 
         'auth'              => false,
@@ -30,6 +32,16 @@ class RouteSetting {
         'https'             => false,
 
         'locale'            => 'en',
+
+        'validate'          => [],
+
+        'mobile'            => false,
+
+        'blockIP'           => [],
+
+        'allowOrigin'       => [],
+
+        'allowAllOrigin'    => false,
 
     ];
 
@@ -48,8 +60,16 @@ class RouteSetting {
      * Set route group middleware.
      */
 
-    public function setMiddleware(string $middleware) {
+    public function middleware(string $middleware) {
         $this->props['middleware'] = $middleware;
+    }
+
+    /**
+     * Set route group afterware.
+     */
+
+    public function afterware(string $afterware) {
+        $this->props['afterware'] = $afterware;
     }
 
     /**
@@ -107,6 +127,14 @@ class RouteSetting {
 
     public function setLocale(string $lang) {
         $this->props['locale'] = $lang;
+    }
+
+    /**
+     * Set route accessibility to mobile devices.
+     */
+
+    public function mobileAccessibility(bool $cond) {
+        $this->props['mobile'] = $cond;
     }
 
     /**

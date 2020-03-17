@@ -30,8 +30,6 @@ class ResponseContentAfterware extends Afterware {
         return $this->next();
     }
 
-    protected function log() {
-
-    }
+    protected function log() {}
 
 }
