@@ -18,8 +18,6 @@ class BaseRequestMiddleware extends Middleware {
         return $this->response(503);
     }
 
-    protected function log() {
-        
-    }
+    protected function log() {}
 
 }
