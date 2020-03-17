@@ -22,8 +22,8 @@ abstract class HandlerBase {
     protected function extractCacheData(string $type) {
         $this->cache = Cache::config()->handler();
         $this->handler = $this->cache[$type];
-        $this->default = $this->route->middleware ?? ($this->handler['default'] ?? 'generic');
-        $this->groups = $this->handler['groups'];
+        $this->default = $this->route->middleware ?? 'generic';
+        $this->groups = $this->handler;
         $this->bundle = new Bundle($this->bundle);
     }
 
@@ -32,7 +32,10 @@ abstract class HandlerBase {
      */
 
     protected function startIteration() {
-        $handler = $this->groups[$this->default];
+        $handler = $this->groups['generic'];
+        if($this->default !== 'generic') {
+            $handler = array_merge($handler, $this->groups[$this->default]);   
+        }
         $this->length = sizeof($handler);
         $index = $this->index;
         $this->execHandler($handler[$index]);

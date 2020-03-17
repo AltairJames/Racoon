@@ -20,7 +20,7 @@ abstract class Afterware extends HandlerUtil {
             $this->success = true;
         }
 
-        if($this->success) {
+        if(!$this->success) {
             $this->log();
         }
     }

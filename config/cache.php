@@ -42,9 +42,11 @@
 
         'config'       => [
 
-            'app'      => true,
+            'app'           => true,
 
-            'handler'  => true,
+            'handler'       => true,
+
+            'security'      => true,
 
         ],
 

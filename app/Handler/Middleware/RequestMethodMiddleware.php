@@ -25,8 +25,6 @@ class RequestMethodMiddleware extends Middleware {
         return $this->response(405);
     }
 
-    protected function log() {
-
-    }
+    protected function log() {}
 
 }

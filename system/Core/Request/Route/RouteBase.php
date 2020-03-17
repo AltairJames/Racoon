@@ -27,6 +27,8 @@ abstract class RouteBase {
 
         'middleware'        => null,
 
+        'afterware'         => null,
+
         'method'            => null,
 
         'verb'              => [],
@@ -51,6 +53,16 @@ abstract class RouteBase {
 
         'locale'            => 'en',
 
+        'validate'          => [],
+
+        'mobile'            => false,
+
+        'blockIP'           => [],
+
+        'allowOrigin'       => [],
+
+        'allowAllOrigin'    => false,
+
     ];
 
     /**
@@ -59,6 +71,15 @@ abstract class RouteBase {
 
     public function middleware(string $middleware) {
         $this->data['middleware'] = $middleware;
+        return $this;
+    }
+
+    /**
+     * Set route afterware.
+     */
+
+    public function afterware(string $afterware) {
+        $this->data['afterware'] = $afterware;
         return $this;
     }
 
@@ -131,6 +152,46 @@ abstract class RouteBase {
 
     public function setLocale(string $lang) {
         $this->data['locale'] = $lang;
+        return $this;
+    }
+
+    /**
+     * Set route accessibility to mobile devices.
+     */
+
+    public function mobileAccessibility(bool $cond) {
+        $this->data['mobile'] = $cond;
+        return $this;
+    }
+
+    /**
+     * Add ip addresses to block.
+     */
+
+    public function blockIP(string $ip) {
+        if(!in_array($ip, $this->data['blockIP'])) {
+            $this->data['blockIP'][] = $ip;
+        }
+        return $this;
+    }
+
+    /**
+     * Allow domain to have cross origin request.
+     */
+
+    public function allow(string $domain) {
+        if(!in_array($domain, $this->data['allowOrigin'])) {
+            $this->data['allowOrigin'] = $domain;
+        }
+        return $this;
+    }
+
+    /**
+     * Allow all cross origin request.
+     */
+
+    public function allowAllOrigin(bool $all) {
+        $this->data['allowAllOrigin'] = $all;
         return $this;
     }
 
