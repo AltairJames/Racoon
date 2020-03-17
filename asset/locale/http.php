@@ -12,7 +12,7 @@ use Racoon\Core\Facade\Locale;
      */
 
     
-    Locale::id('status.code.name.200')->en('Success');
+    Locale::id('status.code.name.200')->en('OK');
     Locale::id('status.code.name.204')->en('No Content');
     Locale::id('status.code.name.307')->en('Temporary Redirect');
     Locale::id('status.code.name.403')->en('Forbidden');
