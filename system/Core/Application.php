@@ -6,6 +6,7 @@ use Racoon\Core\Application\RuntimeManager;
 use Racoon\Core\Facade\App;
 use Racoon\Core\Facade\Cache;
 use Racoon\Core\Facade\Lang;
+use Racoon\Core\Facade\Request;
 use Racoon\Core\Request\Handler\AfterwareService;
 use Racoon\Core\Request\Handler\MiddlewareService;
 use Racoon\Core\Request\RequestHeader;
@@ -118,8 +119,29 @@ class Application extends RuntimeManager {
             $response = $this->controllerInit($code, $controller, 'index', $route, $manager->getResourceData(), $message);
         }
 
-        $header = $this->setRequestHeaders($code, $route, $response, $message);
-        $this->displayResponse($response);
+        if(is_string($response)) {
+            if(App::minify()) {
+                $response = $this->minify($response);
+            }
+        }
+        else if(is_array($response)) {
+            if(Request::isAjax()) {
+                $template = [
+                    'code'      => $code,
+                    'message'   => $message,
+                    'success'   => $code === 200,
+                    'meta'      => [],
+                    'data'      => $response,
+                ];
+                $response = json_encode($template);
+            }
+            else {
+                $response = json_encode($response);
+            }
+        }
+
+        $this->setRequestHeaders($code, $route, $response, $message);
+        echo $response;
     }
 
     /**
@@ -141,27 +163,6 @@ class Application extends RuntimeManager {
 
     private function getStatusCodeMessage(int $code) {
         return Lang::get('http::status.code.name.' . $code);
-    }
-
-    /**
-     * Display or print response.
-     */
-
-    private function displayResponse($response) {
-        if(is_string($response)) {
-            if(App::minify()) {
-                echo $this->minify($response);
-            }
-            else {
-                echo $response;
-            }
-        }
-        else if(is_array($response)) {
-            echo json_encode($response);
-        }
-        else if(is_int($response)) {
-            echo $response;
-        }
     }
 
     /**
